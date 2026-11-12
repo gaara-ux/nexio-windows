@@ -38,6 +38,14 @@ build.cmd
 
 Il utilise le compilateur C# fourni avec Windows : rien à installer.
 
+## Merci
+
+- **[scrcpy](https://github.com/Genymobile/scrcpy)**, de Genymobile : c'est lui qui fait tout le travail de
+  l'onglet **Écran** (voir et contrôler le téléphone ou la TV, avec le son). Un outil formidable, libre (licence
+  Apache 2.0), que j'utilise moi-même. Nexio ne le modifie pas et ne l'inclut pas : il télécharge la version
+  officielle depuis [leur page Releases](https://github.com/Genymobile/scrcpy/releases) au premier usage, puis
+  ajoute la barre de télécommande à côté de sa fenêtre. Si ça te rend service, va leur mettre une étoile.
+
 ## Licence
 
 [MIT](LICENSE)
