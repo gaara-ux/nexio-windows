@@ -67,6 +67,7 @@ namespace Telecommande
             {
                 if (e.Key == Key.Enter) { ToPc(); e.Handled = true; }
                 else if (e.Key == Key.F5) { Load(); e.Handled = true; }
+                else if (e.Key == Key.Delete) { Uninstall(); e.Handled = true; }
             };
             listCard.Children.Add(list);
             empty = Ui.Text("", 14, Theme.Muted);
@@ -85,6 +86,7 @@ namespace Telecommande
             tools.Children.Add(Tool("", "Récupérer sur ce PC", ToPc, "AccentPill"));
             tools.Children.Add(Tool("", "Envoyer vers un appareil…", ToDevice));
             tools.Children.Add(Tool("", "Envoyer des APK du PC…", FromPc));
+            tools.Children.Add(Tool("", "Désinstaller de l'appareil", Uninstall));
             tools.Children.Add(Tool("", "Ouvrir le dossier APK", OpenFolder));
             tools.Children.Add(Tool("", "Actualiser", Load));
             bottom.Children.Add(tools);
@@ -312,6 +314,43 @@ namespace Telecommande
             if (k < 0) return;
             Uploads.Run(dlg.FileNames, peers[k], Client.ApkFolderAndroid, null);
             ((MainWindow)owner).ShowTransfers();
+        }
+
+        /// <summary>Asks the device to uninstall the chosen apps; Android shows its confirmation on the device's screen.</summary>
+        void Uninstall()
+        {
+            var picked = Picked();
+            if (!Ready(picked)) return;
+            var ok = picked.Where(a => !a.System).ToList();
+            int sys = picked.Count - ok.Count;
+            if (ok.Count == 0) { Ui.Info(owner, "Désinstaller", "Les applis système ne peuvent pas être désinstallées : Android ne le permet pas."); return; }
+            var dev = device;
+            string names = ok.Count == 1 ? ok[0].Label : ok.Count + " applis";
+            string msg = "Android va demander de confirmer " + (ok.Count == 1 ? "" : "chacune ") + "sur l'écran de " + dev.Name
+                + " : prends la télécommande ou le téléphone pour répondre."
+                + (sys > 0 ? "\n\n" + sys + " appli" + (sys > 1 ? "s" : "") + " système ignorée" + (sys > 1 ? "s" : "") + " : Android ne permet pas de les désinstaller." : "");
+            if (!Ui.Confirm(owner, "Désinstaller " + names + " de " + dev.Name + " ?", msg, "Désinstaller", true)) return;
+            status.Text = "Demande envoyée à " + dev.Name + "…";
+            new Thread(() =>
+            {
+                string error = null;
+                foreach (var a in ok)
+                {
+                    try { Client.Uninstall(dev, a.Pkg); }
+                    catch (Exception e)
+                    {
+                        string m = e.Message;
+                        if (m.Contains("inconnu")) m = dev.Name + " a une ancienne version de Nexio : installe-lui la 3.9 (ou plus) pour désinstaller à distance.";
+                        error = a.Label + " : " + m;
+                        break;
+                    }
+                }
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    if (error != null) Ui.Info(owner, "Désinstaller", error);
+                    else status.Text = "Confirme sur " + dev.Name + ", puis clique « Actualiser » (F5).";
+                }));
+            }) { IsBackground = true }.Start();
         }
 
         void OpenFolder()

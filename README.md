@@ -11,7 +11,8 @@ Un seul fichier, rien à installer, aucune dépendance (le .NET Framework 4.8 es
   Échap = Retour, Début = Accueil, Espace = lecture/pause, + / − = volume, M = muet.
 - **Fichiers** : deux panneaux (PC et téléphone ou TV), glisser-déposer depuis l'Explorateur, copier, déplacer,
   renommer, supprimer. Double-clic sur un APK pour l'installer sur un appareil.
-- **Applis** : récupère les APK d'un téléphone ou d'une TV sur le PC, ou envoie-les vers un autre appareil.
+- **Applis** : récupère les APK d'un téléphone ou d'une TV sur le PC, envoie-les vers un autre appareil, ou
+  désinstalle des applis de l'appareil (touche Suppr ; Android demande de confirmer sur l'écran de l'appareil).
 - **Écran** : voir et contrôler le téléphone ou la TV avec [scrcpy](https://github.com/Genymobile/scrcpy)
   (téléchargé au premier usage). Une barre de télécommande se colle à côté de la fenêtre : déplace-la,
   réduis-la ou ferme-la.

@@ -59,6 +59,9 @@ namespace Telecommande
         /// <summary>Installs a file that is on the device, on that device: its screen asks to confirm. Blocking.</summary>
         public static void Install(Peer p, string path) { Post(p, "/api/install?path=" + Enc(path)); }
 
+        /// <summary>Uninstalls an app of the device: its screen asks to confirm. Blocking.</summary>
+        public static void Uninstall(Peer p, string pkg) { Post(p, "/api/uninstall?pkg=" + Enc(pkg)); }
+
         /// <summary>Sends a file of this PC to the device's APK folder, then installs it there. Blocking.</summary>
         public static void InstallFromPc(string file, Peer to, Transfer t)
         {
